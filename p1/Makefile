@@ -1,29 +1,40 @@
-# Environnement K3s avec Vagrant
+SHELL := /bin/bash
 
-Ce projet crée une VM Vagrant avec K3s (mode serveur) et déploie 3 applications web accessibles en fonction du `Host` utilisé.
+VAGRANT_CWD := $(CURDIR)
 
-## Prérequis
+.PHONY: help up halt destroy status ssh-server ssh-worker reload provision logs
 
-- macOS
-- [VirtualBox](https://www.virtualbox.org/)
-- [Vagrant](https://www.vagrantup.com/)
-- `make`
+help:
+    @echo "Commandes disponibles :"
+    @echo "  make up         - Démarrer et provisionner les VMs (server + worker)"
+    @echo "  make halt       - Arrêter les VMs"
+    @echo "  make destroy    - Détruire les VMs"
+    @echo "  make status     - Statut des VMs"
+    @echo "  make reload     - Redémarrer les VMs avec rechargement du Vagrantfile"
+    @echo "  make provision  - Relancer le provisionning sur les VMs"
+    @echo "  make ssh-server - SSH sur la VM server (userS)"
+    @echo "  make ssh-worker - SSH sur la VM worker (userSW)"
 
-## Structure du projet
+up:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant up
 
-- `Vagrantfile` : configuration de la VM (Ubuntu + K3s)
-- `apps.yaml`   : déploiement Kubernetes pour `app1`, `app2`, `app3`
-- `ingress.yaml`: Ingress Traefik avec routage selon le `Host`
-- `Makefile`    : commandes pratiques
+halt:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant halt
 
-## VM
+destroy:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant destroy -f
 
-- Nom d’hôte : `YourLoginS` (à adapter dans le `Vagrantfile`)
-- IP privée : `192.168.56.110`
+status:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant status
 
-## Démarrage de l’environnement
+reload:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant reload
 
-Dans le dossier du projet :
+provision:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant provision
 
-```bash
-make up
+ssh-server:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant ssh userS
+
+ssh-worker:
+    VAGRANT_CWD=$(VAGRANT_CWD) vagrant ssh userSW
