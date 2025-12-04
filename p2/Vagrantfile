@@ -1,30 +1,17 @@
-# Vagrantfile
 Vagrant.configure("2") do |config|
-	config.vm.box = "ubuntu/jammy64"  # Ubuntu 22.04 LTS
-	config.vm.hostname = "YourLoginS"
+	config.vm.box = "generic/centos8"
+	config.vm.box_check_update = false
 
-	config.vm.network "private_network", ip: "192.168.56.110"
-
-	config.vm.provider "virtualbox" do |vb|
-	  vb.memory = 4096
-	  vb.cpus = 2
-	end
-
-	# Provision K3s server
-	config.vm.provision "shell", inline: <<-SHELL
-	  set -e
-
-	  # Mise à jour
-	  apt-get update -y
-	  apt-get upgrade -y
-
-	  # K3s server (avec traefik activé par défaut)
-	  if ! command -v k3s >/dev/null 2>&1; then
-		curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --node-ip=192.168.56.110 --bind-address=0.0.0.0 --advertise-address=192.168.56.110" sh -
-	  fi
-
-	  # kubectl déjà linké par K3s (/usr/local/bin/kubectl)
-	  echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> /home/vagrant/.bashrc
-	  chown vagrant:vagrant /etc/rancher/k3s/k3s.yaml
-	SHELL
+	config.vm.define "lseiberrS" do |server|
+	  server.vm.hostname = "lseiberrS"
+	  server.vm.network :private_network, ip: "192.168.56.110"
+	  server.vm.synced_folder ".", "/vagrant", disabled: false
+	  server.vm.provider "virtualbox" do |v|
+		  v.name = "lseiberrS"
+			   v.gui = false
+			   v.memory = "1024"
+			   v.cpus = 2
+		  end
+	  server.vm.provision "shell", privileged: true, path: "server.sh"
+	  end
   end

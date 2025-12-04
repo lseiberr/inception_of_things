@@ -1,40 +1,36 @@
-# ingress.yaml
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: apps-ingress
-  namespace: apps
-  annotations:
-    kubernetes.io/ingress.class: "traefik"
+  name: ingress-orchestration
 spec:
   rules:
-    - host: app1.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: app1-svc
-                port:
-                  number: 80
-    - host: app2.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: app2-svc
-                port:
-                  number: 80
-    # règle catch-all sans host => défaut app3
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: app3-svc
-                port:
-                  number: 80
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: app-three
+            port:
+              number: 80
+  - host: app1.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: app-one
+            port:
+              number: 80
+  - host: app2.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: app-two
+            port:
+              number: 80
