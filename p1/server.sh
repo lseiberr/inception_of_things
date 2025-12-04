@@ -8,10 +8,16 @@ sudo apt-get upgrade -y
 # Installation de K3s en mode Server
 curl -sfL https://get.k3s.io | sh -
 
-# Installation de kubectl (via dépôt officiel Kubernetes)
-sudo apt-get install -y ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-sudo apt-get update -y
-sudo apt-get install -y kubectl
+# K3s installe déjà kubectl (linké sur k3s kubectl) et un kubeconfig
+# On copie juste le kubeconfig dans /vagrant pour l'hôte et on sécurise le token.
+
+# KUBECONFIG pour la VM et le host (facultatif mais pratique)
+sudo mkdir -p /home/vagrant/.kube
+sudo cp /etc/rancher/k3s/k3s.yaml /home/vagrant/.kube/config
+sudo chown -R vagrant:vagrant /home/vagrant/.kube
+
+# Copie aussi vers /vagrant pour que tu puisses l'utiliser depuis ton Mac
+sudo cp /etc/rancher/k3s/k3s.yaml /vagrant/kubeconfig.yaml
+sudo chown vagrant:vagrant /vagrant/kubeconfig.yaml
+
+# Rien d'autre à installer : kubectl est déjà fourni par K3s
