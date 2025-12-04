@@ -1,0 +1,152 @@
+# apps.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+        - name: app1
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html
+          configMap:
+            name: app1-html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app1-html
+  namespace: apps
+data:
+  index.html: |
+    <html><body><h1>APP 1</h1></body></html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app1-svc
+  namespace: apps
+spec:
+  selector:
+    app: app1
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+        - name: app2
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html
+          configMap:
+            name: app2-html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app2-html
+  namespace: apps
+data:
+  index.html: |
+    <html><body><h1>APP 2</h1></body></html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2-svc
+  namespace: apps
+spec:
+  selector:
+    app: app2
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app3
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app3
+  template:
+    metadata:
+      labels:
+        app: app3
+    spec:
+      containers:
+        - name: app3
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html
+          configMap:
+            name: app3-html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app3-html
+  namespace: apps
+data:
+  index.html: |
+    <html><body><h1>APP 3 (default)</h1></body></html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app3-svc
+  namespace: apps
+spec:
+  selector:
+    app: app3
+  ports:
+    - port: 80
+      targetPort: 80

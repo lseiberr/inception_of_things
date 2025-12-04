@@ -1,0 +1,51 @@
+# -*- mode: ruby -*-
+Vagrant.configure("2") do |config|
+	config.vm.box = "ubuntu/jammy64"
+	config.vm.hostname = "k3d-vm"
+
+	# Redirection du port 8888 de la VM vers l'hôte
+	config.vm.network "forwarded_port", guest: 8888, host: 8888
+
+	# Configuration ressources
+	config.vm.provider "virtualbox" do |vb|
+	  vb.memory = "4096"
+	  vb.cpus = 2
+	end
+
+	# Provisionnement shell
+	config.vm.provision "shell", inline: <<-SHELL
+	  # Update & dependencies
+	  sudo apt update -y && sudo apt upgrade -y
+	  sudo apt install -y curl wget git apt-transport-https ca-certificates gnupg lsb-release openssh-client
+
+	  # Docker
+	  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
+	  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
+	  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+	  sudo apt update -y
+	  sudo apt install -y docker-ce docker-ce-cli containerd.io
+	  sudo usermod -aG docker vagrant
+
+	  # K3D
+	  curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+	  # kubectl
+	  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+	  chmod +x kubectl
+	  sudo mv kubectl /usr/local/bin/
+
+	  # ArgoCD CLI
+	  sudo curl -sSL -o /usr/local/bin/argocd \
+		https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+	  sudo chmod +x /usr/local/bin/argocd
+
+	  # Setup SSH key for GitHub cloning
+	  mkdir -p /home/vagrant/.ssh
+	  echo "#{ENV['HOME']}/.ssh/id_rsa.pub" > /home/vagrant/.ssh/authorized_keys
+	  chmod 600 /home/vagrant/.ssh/authorized_keys
+	  chown -R vagrant:vagrant /home/vagrant/.ssh
+
+	  # Disable strict host key checking for github.com
+	  echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/vagrant/.ssh/config
+	SHELL
+  end
