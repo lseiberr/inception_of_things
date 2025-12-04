@@ -1,13 +1,10 @@
 #!/bin/bash
-set -euxo pipefail
-
-# Mise à jour des paquets
-sudo apt-get update -y
-sudo apt-get upgrade -y
-
-# Installation de K3s en mode Agent
-K3S_URL=https://192.168.56.110:6443
-K3S_TOKEN="$1"  # le token passé par Vagrant
-curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -
-
-# kubectl est aussi dispo ici en tant que client (via k3s)
+sudo dnf update -y
+sudo dnf install -y net-tools
+sudo systemctl disable firewalld --now
+sudo setenforce 0
+sed -i 's/SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
+sudo /usr/local/bin/k3s-agent-uninstall.sh
+export TKN=$(cat /vagrant/token)
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="agent --server https://192.168.56.110:6443 --node-ip 192.168.56.111 --token 12345" sh -s -
+echo "Agent setup complete"
