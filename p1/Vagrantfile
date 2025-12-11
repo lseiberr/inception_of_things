@@ -1,29 +1,38 @@
 Vagrant.configure("2") do |config|
-	config.vm.box = "generic/centos8"
+  username = `whoami`.strip
+  config.vm.synced_folder "./confs", "/vagrant_shared"
 
-	config.vm.define "lseiberrS" do |control|
-	  control.vm.hostname = "lseiberrS"
-	  control.vm.network "private_network", ip: "192.168.56.110"
-	  control.vm.synced_folder ".", "/vagrant", disabled: false
-	  control.vm.provider "virtualbox" do |v|
-		  v.name = "lseiberrS"
-			   v.gui = false
-			   v.memory = "1024"
-			   v.cpus = 1
-		  end
-	  control.vm.provision "shell", path: "server.sh"
-	  end
-
-	config.vm.define "lseiberrSW" do |agent|
-	  agent.vm.hostname = "lseiberrSW"
-	  agent.vm.network "private_network", ip: "192.168.56.111"
-	  agent.vm.synced_folder ".", "/vagrant", disabled: false
-	  agent.vm.provider "virtualbox" do |v|
-		  v.name = "lseiberrSW"
-		  v.gui = false
-			   v.memory = "1024"
-			   v.cpus = 1
-		  end
-	  agent.vm.provision "shell", path: "agent.sh"
-	  end
+  # provider Parallels par défaut
+  config.vm.provider "parallels" do |p|
+    p.memory = 2048
+    p.cpus   = 2
   end
+
+  # --- serveur ---
+  config.vm.define "#{username}S" do |server|
+    server.vm.hostname = "#{username}S"
+    server.vm.provider "parallels" do |p|
+      p.name = "#{username}S"
+    end
+
+    server.vm.box = "bento/centos-stream-10"
+
+    # réseau privé commun aux 2 VMs
+    server.vm.network "private_network", ip: "192.168.56.110"
+
+    server.vm.provision "shell", path: "./server.sh"
+  end
+
+  # --- worker ---
+  config.vm.define "#{username}SW" do |worker|
+    worker.vm.hostname = "#{username}SW"
+    worker.vm.provider "parallels" do |p|
+      p.name = "#{username}SW"
+    end
+
+    worker.vm.box = "bento/centos-stream-10"
+    worker.vm.network "private_network", ip: "192.168.56.111"
+
+    worker.vm.provision "shell", path: "./agent.sh"
+  end
+end

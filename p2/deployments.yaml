@@ -22,12 +22,12 @@ spec:
     spec:
       containers:
         - name: hello-kubernetes
-          image: "paulbouwer/hello-kubernetes:1.10"
+          image: nginxdemos/hello
           env:
           - name: MESSAGE
             value: "Hello from app1."
           ports:
-            - containerPort: 8080
+            - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,12 +47,12 @@ spec:
     spec:
       containers:
         - name: hello-kubernetes
-          image: "paulbouwer/hello-kubernetes:1.10"
+          image: nginxdemos/hello
           env:
           - name: MESSAGE
             value: "Hello from app2."
           ports:
-            - containerPort: 8080
+            - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,9 +72,9 @@ spec:
     spec:
       containers:
         - name: hello-kubernetes
-          image: "paulbouwer/hello-kubernetes:1.10"
+          image: nginxdemos/hello
           env:
           - name: MESSAGE
             value: "Hello from app3."
           ports:
-            - containerPort: 8080
+            - containerPort: 80

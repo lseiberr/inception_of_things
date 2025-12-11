@@ -15,7 +15,7 @@ Le token du serveur est copié sur le dossier partagé et utilisé par le script
 
 ## Fichiers
 
-- `Vagrantfile` : définition des VMs `userS` et `userSW`
+- `Vagrantfile` : définition des VMs `lseiberrS` et `lseiberrSW`
 - `server.sh`   : installation de K3s en **mode server** + kubectl
 - `agent.sh`    : installation de K3s en **mode agent** (worker) + kubectl
 - `Makefile`    : commandes pratiques pour gérer les VMs
@@ -25,4 +25,11 @@ Le token du serveur est copié sur le dossier partagé et utilisé par le script
 Dans le dossier `p1` :
 
 ```bash
-make up
+vagrant up
+```
+
+Regarder si la vm utilise eth1
+
+```bash
+ifconfig enp0s6
+```

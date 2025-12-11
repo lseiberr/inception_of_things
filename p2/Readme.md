@@ -18,7 +18,7 @@ Ce projet crée une VM Vagrant avec K3s (mode serveur) et déploie 3 application
 
 ## VM
 
-- Nom d’hôte : `YourLoginS` (à adapter dans le `Vagrantfile`)
+- Nom d’hôte : `lseiberrS`
 - IP privée : `192.168.56.110`
 
 ## Démarrage de l’environnement
@@ -26,4 +26,4 @@ Ce projet crée une VM Vagrant avec K3s (mode serveur) et déploie 3 application
 Dans le dossier du projet :
 
 ```bash
-make up
+vagrant up

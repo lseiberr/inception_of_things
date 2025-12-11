@@ -1,0 +1,23 @@
+global:
+  edition: ce
+
+  hosts:
+    domain: gitlab.local        # nom du domaine exposé
+    externalIP: 192.168.56.111  # IP de la VM exposée pour le navigateur
+    https: false
+    gitlab:
+      name: gitlab.local
+
+  ingress:
+    configureCertmanager: false
+    tls:
+      enabled: false
+
+nginx-ingress:
+  enabled: false  # on garde Traefik de k3d
+
+gitlab-runner:
+  install: false
+
+prometheus:
+  install: false

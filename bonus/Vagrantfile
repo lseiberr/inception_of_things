@@ -1,15 +1,17 @@
 Vagrant.configure("2") do |config|
-	config.vm.box = "bento/centos-stream-10"
+	config.vm.box = "bento/ubuntu-22.04"
 	config.vm.box_check_update = false
 
 	config.vm.define "lseiberrS" do |server|
 	  server.vm.hostname = "lseiberrS"
-	  server.vm.network "private_network", ip: "192.168.56.110"
+	  server.vm.network "private_network", ip: "192.168.56.111"
+	  server.vm.network "forwarded_port", guest: 8080, host: 9080, auto_correct: true
+	  server.vm.network "forwarded_port", guest: 8443, host: 8443, auto_correct: true
 	  server.vm.synced_folder ".", "/vagrant", disabled: false
 	  server.vm.provider "parallels" do |v|
 		  v.name = "lseiberrS"
-			   v.memory = "1024"
-			   v.cpus = 2
+			   v.memory = "8192"
+			   v.cpus = 4
 		  end
 	  server.vm.provision "shell", privileged: true, path: "server.sh"
 	  end

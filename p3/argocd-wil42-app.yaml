@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-app
+  name: wil-playground
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/lseiberr/inception_of_things_p3.git
-    targetRevision: main
-    path: app
+    repoURL: https://github.com/lseiberr/lseiberr_ception.git
+    targetRevision: HEAD
+    path: k8s
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
   syncPolicy:
     automated:
-      prune: true
       selfHeal: true
+      prune: true
