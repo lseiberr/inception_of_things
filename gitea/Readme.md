@@ -379,7 +379,6 @@ Le cluster devient donc 100 % **déclaratif** : l’état K8s reflète en perman
 - Toute modification poussée dans GitLab → déploiement automatique via Argo CD (workflow GitOps complet).
 
 
-
-```bash
-kubectl -n gitlab port-forward svc/gitlab-gitlab-shell 2222:22
-```
+argocd repo add http://gitlab.local:8080/root/lseiberr_ception.git \
+  --username <ton_user> \
+  --password <ton_token_gitlab>

@@ -1,12 +1,12 @@
 Vagrant.configure("2") do |config|
-	config.vm.box = "bento/centos-stream-10"
+	config.vm.box = "centos/stream10"
 	config.vm.box_check_update = false
 
 	config.vm.define "lseiberrS" do |server|
 	  server.vm.hostname = "lseiberrS"
 	  server.vm.network "private_network", ip: "192.168.56.110"
 	  server.vm.synced_folder ".", "/vagrant", disabled: false
-	  server.vm.provider "parallels" do |v|
+	  server.vm.provider "virtualbox" do |v|
 		  v.name = "lseiberrS"
 			   v.memory = "1024"
 			   v.cpus = 2

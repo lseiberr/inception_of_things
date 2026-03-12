@@ -1,0 +1,45 @@
+# -----------------------------------------------------------
+# Gitea Helm Chart Values
+# Optimisé pour k3d + Traefik + HTTP uniquement
+# -----------------------------------------------------------
+
+replicaCount: 1
+
+service:
+  http:
+    type: ClusterIP
+    port: 3000
+  ssh:
+    type: ClusterIP
+    port: 22
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+  hosts:
+    - host: gitea.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []   # pas de HTTPS
+
+gitea:
+  admin:
+    username: root
+    password: admin123
+    email: root@gitea.local
+
+  config:
+    APP_NAME: "Gitea"
+    server:
+      DOMAIN: gitea.local
+      ROOT_URL: "http://gitea.local/"
+      HTTP_PORT: 3000
+    service:
+      DISABLE_REGISTRATION: false
+
+persistence:
+  enabled: true
+  size: 5Gi

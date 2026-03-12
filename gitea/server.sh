@@ -130,31 +130,35 @@ kubectl -n argocd patch deploy argocd-server \
 # Attendre que le rollout soit terminé
 kubectl -n argocd rollout status deploy/argocd-server --timeout=120s
 
-# 3. Gitlab via Helm
+# --------------------------------------------------
+# Installation de Gitea via Helm
 # --------------------------------------------------
 if ! command -v helm >/dev/null 2>&1; then
   curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 fi
-
-helm repo add gitlab https://charts.gitlab.io
+# Ajouter le repo Helm Gitea
+helm repo add gitea https://dl.gitea.com/charts/
 helm repo update
 
-kubectl create namespace gitlab || true
+# Namespace Gitea
+kubectl create namespace gitea || true
 
-helm upgrade --install gitlab gitlab/gitlab \
-  --namespace gitlab \
-  -f /vagrant/gitlab-values.yaml \
-  --timeout 30m \
-  --set global.hosts.domain=gitlab.local \
-  --set global.hosts.externalIP=192.168.56.111 \
-  --set global.hosts.external_url=http://gitlab.local:8080
+# Installation du chart Gitea
+helm upgrade --install gitea gitea/gitea \
+  --namespace gitea \
+  -f /vagrant/gitea-values.yaml \
+  --timeout 10m
 
-# attendre que les pods soient créés (affichage simple)
-kubectl -n gitlab get pods
+# Appliquer l'ingress Gitea
+kubectl apply -f /vagrant/ingress-gitea.yaml
+
+# Afficher les pods
+kubectl -n gitea get pods
+
 
 # Ingress Gitlab
 # --------------------------------------------------
-kubectl apply -f /vagrant/ingress-gitlab.yaml
+kubectl apply -f /vagrant/ingress-gitea.yaml
 
 # 7. Application Argo CD + ingress
 # --------------------------------------------------
