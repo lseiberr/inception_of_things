@@ -13,7 +13,7 @@ Ce bonus met en place, via Vagrant, un environnement complet de CI/CD local bas�
 
 ## 1. Prérequis
 
-- Parallels + Vagrant installés
+- Virtualbox + Vagrant installés
 - Fichier `hosts` de ta machine modifié pour pointer vers la VM :
 
 ```bash

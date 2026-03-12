@@ -20,7 +20,7 @@ Mettre en place un environnement local de type **mini-plateforme Kubernetes** av
 Sur votre machine hôte (Mac/Linux) :
 
 - **Vagrant**
-- Un provider de VM compatible (config fournie pour **Parallels**)
+- Un provider de VM compatible (config fournie pour **Virtualbox**)
 - Accès Internet
 
 Aucun besoin d’installer Docker / kubectl en local : tout se fait dans la VM.
