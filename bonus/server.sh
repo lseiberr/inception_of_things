@@ -154,9 +154,12 @@ kubectl -n gitlab get pods
 
 # Ingress Gitlab
 # --------------------------------------------------
+kubectl create -f /vagrant/ingress-gitlab.yaml
 kubectl apply -f /vagrant/ingress-gitlab.yaml
 
 # 7. Application Argo CD + ingress
 # --------------------------------------------------
+kubectl create -n argocd -f /vagrant/argocd-wil42-app.yaml
 kubectl apply -n argocd -f /vagrant/argocd-wil42-app.yaml
+kubectl create -f /vagrant/ingress-argocd.yaml
 kubectl apply -f /vagrant/ingress-argocd.yaml
